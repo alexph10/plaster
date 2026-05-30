@@ -17,9 +17,6 @@ public:
   template <typename T, typename... Args>
   T &AddOrReplaceComponent(Args &&...args);
 
-  template <typename T, typename... Args>
-  T &GetComponent();
-
   template <typename T> const T &GetComponent() const;
 
   template <typename T> bool HasComponent() const;
