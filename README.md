@@ -82,13 +82,13 @@ cmake --build build --config Debug
 
 ## Roadmap
 
-1. ✅ Vulkan instance, device, swapchain, ImGui overlay
-2. ⬜ Graphics pipeline + textured spinning cube (vertex/index buffers, depth, MVP)
-3. ⬜ Render to low-res offscreen image (e.g. 320×240), nearest-blit to swapchain
-4. ⬜ Post-process pass: palette quantization + ordered/blue-noise dithering
-5. ⬜ Minimal scene representation (`Transform` + `Mesh` + `Material`)
-6. ⬜ Free-fly camera bound to `Input`
-7. ⬜ Swapchain recreation on window resize
+1. [x] Vulkan instance, device, swapchain, ImGui overlay
+2. [ ] Graphics pipeline + textured spinning cube (vertex/index buffers, depth, MVP)
+3. [ ] Render to low-res offscreen image (e.g. 320×240), nearest-blit to swapchain
+4. [ ] Post-process pass: palette quantization + ordered/blue-noise dithering
+5. [ ] Minimal scene representation (`Transform` + `Mesh` + `Material`)
+6. [ ] Free-fly camera bound to `Input`
+7. [ ] Swapchain recreation on window resize
 
 ## License
 
