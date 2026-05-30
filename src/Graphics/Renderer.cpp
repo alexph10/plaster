@@ -1,6 +1,6 @@
 #include "Graphics/Renderer.h"
-#include "Graphics/VulkanContext.h"
-#include "Graphics/ImGuiManager.h"
+#include "Graphics/Vulkan/VulkanContext.h"
+#include "Graphics/UI/ImGuiManager.h"
 #include "Core/Window.h"
 #include "Core/Input.h"
 #include "imgui.h"
@@ -31,38 +31,30 @@ Renderer::Renderer(Window* window, VulkanContext* vulkanContext)
 
 Renderer::~Renderer() {
     VkDevice device = m_vulkanContext->getDevice();
-
-    // Wait for device to finish
     vkDeviceWaitIdle(device);
 
-    // Cleanup sync objects
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(device, m_imageAvailableSemaphores[i], nullptr);
         vkDestroySemaphore(device, m_renderFinishedSemaphores[i], nullptr);
         vkDestroyFence(device, m_inFlightFences[i], nullptr);
     }
 
-    // Cleanup command pool
     if (m_commandPool) {
         vkDestroyCommandPool(device, m_commandPool, nullptr);
     }
 
-    // Cleanup framebuffers
     for (auto framebuffer : m_framebuffers) {
         vkDestroyFramebuffer(device, framebuffer, nullptr);
     }
 
-    // Cleanup render pass
     if (m_renderPass) {
         vkDestroyRenderPass(device, m_renderPass, nullptr);
     }
 
-    // Cleanup image views
     for (auto imageView : m_swapchainImageViews) {
         vkDestroyImageView(device, imageView, nullptr);
     }
 
-    // Cleanup swapchain
     if (m_swapchain) {
         vkDestroySwapchainKHR(device, m_swapchain, nullptr);
     }
@@ -311,7 +303,6 @@ void Renderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    // Render ImGui
     m_imguiManager->render(commandBuffer);
 
     vkCmdEndRenderPass(commandBuffer);
@@ -322,26 +313,18 @@ void Renderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
 void Renderer::render() {
     VkDevice device = m_vulkanContext->getDevice();
 
-    // Wait for previous frame
     vkWaitForFences(device, 1, &m_inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
 
-    // Acquire next image
     uint32_t imageIndex;
     VkResult result = vkAcquireNextImageKHR(device, m_swapchain, UINT64_MAX,
                                             m_imageAvailableSemaphores[m_currentFrame],
                                             VK_NULL_HANDLE, &imageIndex);
 
-    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-        // Swapchain needs recreation (window resized)
-        return;
-    }
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) { return; } // TODO: handle window resize via swapchain recreation
 
     vkResetFences(device, 1, &m_inFlightFences[m_currentFrame]);
-
-    // Record command buffer
     vkResetCommandBuffer(m_commandBuffers[m_currentFrame], 0);
 
-    // ImGui frame
     m_imguiManager->newFrame();
     
     ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
@@ -375,7 +358,6 @@ void Renderer::render() {
 
     recordCommandBuffer(m_commandBuffers[m_currentFrame], imageIndex);
 
-    // Submit command buffer
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -393,7 +375,6 @@ void Renderer::render() {
 
     vkQueueSubmit(m_vulkanContext->getGraphicsQueue(), 1, &submitInfo, m_inFlightFences[m_currentFrame]);
 
-    // Present
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
     presentInfo.waitSemaphoreCount = 1;

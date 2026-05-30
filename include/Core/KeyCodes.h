@@ -50,12 +50,11 @@ enum class Key {
   Y = 89,
   Z = 90,
 
-  LeftBracket = 91,  /* [ */
-  Backslash = 92,    /* \ */
-  RightBracket = 93, /* ] */
-  GraveAccent = 96,  /* ` */
+  LeftBracket = 91,
+  Backslash = 92,
+  RightBracket = 93,
+  GraveAccent = 96,
 
-  // Function keys
   Escape = 256,
   Enter = 257,
   Tab = 258,
@@ -102,7 +101,6 @@ enum class Key {
   F24 = 313,
   F25 = 314,
 
-  // Keypad
   KP0 = 320,
   KP1 = 321,
   KP2 = 322,
@@ -121,7 +119,6 @@ enum class Key {
   KPEnter = 335,
   KPEqual = 336,
 
-  // Modifiers
   LeftShift = 340,
   LeftControl = 341,
   LeftAlt = 342,

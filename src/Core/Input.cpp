@@ -1,7 +1,6 @@
 #include "Core/Input.h"
 #include <GLFW/glfw3.h>
 #include <cstring>
-#include <ppltasks.h>
 
 namespace plaster {
 Input::State Input::s_currentState = {};

@@ -1,19 +1,25 @@
 @echo off
-REM Change to build directory
+setlocal
+
+if not exist build mkdir build
 cd build
 
-REM Generate Visual Studio 2022 solution (64-bit)
 cmake .. -G "Visual Studio 17 2022" -A x64
+if errorlevel 1 goto :fail
 
-REM Build the debug config 
 cmake --build . --config Debug
+if errorlevel 1 goto :fail
 
-REM Return to project root
-cd .. 
-
-REM Execute the executable
-echo Running executable...
-.\build\Debug\plasterEngine_app.exe
+cd ..
 echo.
-echo Executable exited with code: %ERRORLEVEL%
-pause
+echo Running plasterEngine_app...
+".\build\Debug\plasterEngine_app.exe"
+echo.
+echo Exit code: %ERRORLEVEL%
+goto :eof
+
+:fail
+cd ..
+echo.
+echo Build failed.
+exit /b 1
