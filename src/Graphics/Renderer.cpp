@@ -330,8 +330,8 @@ void Renderer::render() {
     ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
 
-    ImGui::Begin("PlasterEngine");
-    ImGui::Text("Welcome to PlasterEngine!");
+    ImGui::Begin("plaster");
+    ImGui::Text("Welcome to plaster!");
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
     
     ImGui::Separator();

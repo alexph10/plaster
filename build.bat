@@ -12,8 +12,8 @@ if errorlevel 1 goto :fail
 
 cd ..
 echo.
-echo Running plasterEngine_app...
-".\build\Debug\plasterEngine_app.exe"
+echo Running plaster...
+".\build\Debug\plaster.exe"
 echo.
 echo Exit code: %ERRORLEVEL%
 goto :eof

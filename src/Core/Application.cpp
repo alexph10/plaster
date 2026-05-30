@@ -9,7 +9,7 @@ namespace plaster {
 Application::Application()
     : m_window(nullptr), m_vulkanContext(nullptr), m_renderer(nullptr) {
     
-    m_window = new Window(2560, 1440, "PlasterEngine");
+    m_window = new Window(1280, 720, "plaster");
     m_vulkanContext = new VulkanContext(m_window);
     m_renderer = new Renderer(m_window, m_vulkanContext);
 }

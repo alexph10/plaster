@@ -91,4 +91,4 @@ coverage/
 *.gcno
 
 # Documentation
-docs
+docs/
