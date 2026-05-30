@@ -1,7 +1,17 @@
+#include "Core/Application.h"
 #include <iostream>
+#include <exception>
 
 int main() {
-  std::cout << "Plaster Engine - Basic Build Test" << std::endl;
-  std::cout << "Plastiboo shaders are ready for integration!" << std::endl;
+  try {
+    plaster::Application app;
+    app.run();
+  } catch (const std::exception& e) {
+    std::cerr << "Fatal error: " << e.what() << std::endl;
+    std::cerr << "Press Enter to exit..." << std::endl;
+    std::cin.get();
+    return -1;
+  }
   return 0;
 }
+

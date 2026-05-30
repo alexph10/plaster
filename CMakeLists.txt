@@ -1,58 +1,78 @@
 cmake_minimum_required(VERSION 3.20)
+project(plasterEngine)
 
-project(Plaster VERSION 1.0.0 LANGUAGES CXX)
-
-# C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Default to Debug build
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug)
-endif()
+# Don't set custom output directories - let Visual Studio handle it
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# Compiler-specific options
-if(MSVC)
-    add_compile_options(/W4)
-else()
-    add_compile_options(-Wall -Wextra -Wpedantic)
-endif()
+# Find Vulkan
+find_package(Vulkan REQUIRED)
 
-# Find OpenGL
-find_package(OpenGL REQUIRED)
+# Add GLFW as subdirectory
+add_subdirectory(external/glfw)
 
-# Core source files - now we can include more files with stub headers
-file(GLOB_RECURSE SOURCES 
-    "src/*.cpp"
-    "src/*.h"
-)
-
-# Remove files that require external libraries or have major issues
-list(FILTER SOURCES EXCLUDE REGEX ".*Vulkan.*")
-list(FILTER SOURCES EXCLUDE REGEX ".*VulkanContext.*")
-list(FILTER SOURCES EXCLUDE REGEX ".*Shader.*")  # Exclude until we fix missing members
-
-# Create executable
-add_executable(${PROJECT_NAME} ${SOURCES})
+# Add GLM as subdirectory
+add_subdirectory(external/glm)
 
 # Include directories
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/include  # Add our stub headers
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${VULKAN_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/backends
 )
 
-# Link OpenGL
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    OpenGL::GL
+set(IMGUI_SOURCES
+    external/imgui/imgui.cpp
+    external/imgui/imgui_demo.cpp
+    external/imgui/imgui_draw.cpp
+    external/imgui/imgui_widgets.cpp
+    external/imgui/imgui_tables.cpp
+    external/imgui/backends/imgui_impl_vulkan.cpp
+    external/imgui/backends/imgui_impl_glfw.cpp
 )
 
-# Set VS debugger working directory
-set_property(TARGET ${PROJECT_NAME}
-    PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+# Engine library sources
+set(ENGINE_SOURCES
+    src/Core/Window.cpp
+    src/Core/Application.cpp
+    src/Core/Input.cpp
+    src/Graphics/VulkanContext.cpp
+    src/Graphics/Renderer.cpp
+    src/Engine.cpp
+    src/Graphics/ImGuiManager.cpp
 )
 
-# Copy assets if they exist
-if(EXISTS "${CMAKE_SOURCE_DIR}/assets")
-    file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
+# Create engine library
+add_library(plasterEngine STATIC ${ENGINE_SOURCES} ${IMGUI_SOURCES})
+
+# Link dependencies
+target_link_libraries(plasterEngine PUBLIC
+    Vulkan::Vulkan
+    glfw
+    glm::glm
+)
+
+# Include directories for library
+target_include_directories(plasterEngine PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# Main executable
+add_executable(plasterEngine_app src/main.cpp)
+
+# Link executable to library
+target_link_libraries(plasterEngine_app PRIVATE plasterEngine)
+
+# Compiler warnings
+if(MSVC)
+    target_compile_options(plasterEngine PRIVATE /W4)
+    target_compile_options(plasterEngine_app PRIVATE /W4)
+else()
+    target_compile_options(plasterEngine PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(plasterEngine_app PRIVATE -Wall -Wextra -Wpedantic)
 endif()
+
