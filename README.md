@@ -1,4 +1,1 @@
 
-## License
-
-See [LICENSE](LICENSE).
