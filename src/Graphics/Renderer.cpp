@@ -13,7 +13,7 @@
 namespace plaster {
 
 Renderer::Renderer(Window* window, VulkanContext* vulkanContext)
-    : m_window(window), m_vulkanContext(vulkanContext),
+    : m_vulkanContext(vulkanContext), m_window(window),
       m_swapchain(VK_NULL_HANDLE), m_swapchainImageFormat(VK_FORMAT_UNDEFINED),
       m_swapchainExtent({0, 0}), m_renderPass(VK_NULL_HANDLE),
       m_commandPool(VK_NULL_HANDLE), m_currentFrame(0) {

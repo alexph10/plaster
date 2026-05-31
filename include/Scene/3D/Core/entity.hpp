@@ -3,9 +3,12 @@
 #include <utility>
 
 #include <entt/entity/entity.hpp>
+#include <entt/entity/registry.hpp>
 
 namespace plaster::scene3d {
+
 class Scene;
+
 class Entity {
 public:
   Entity() = default;
@@ -17,6 +20,7 @@ public:
   template <typename T, typename... Args>
   T &AddOrReplaceComponent(Args &&...args);
 
+  template <typename T> T &GetComponent();
   template <typename T> const T &GetComponent() const;
 
   template <typename T> bool HasComponent() const;
@@ -24,6 +28,7 @@ public:
   template <typename T> void RemoveComponent();
 
   entt::entity GetHandle() const;
+  Scene *GetScene() const { return m_scene; }
 
   bool IsValid() const;
 
@@ -34,6 +39,42 @@ public:
 
 private:
   entt::entity m_handle{entt::null};
-  Scene* m_scene{nullptr};
+  Scene *m_scene{nullptr};
+
+  friend class Scene;
 };
+
+} // namespace plaster::scene3d
+
+// Template definitions live in the header so callers can instantiate them.
+#include "Scene/3D/Core/scene.hpp"
+
+namespace plaster::scene3d {
+
+template <typename T, typename... Args>
+T &Entity::AddComponent(Args &&...args) {
+  return m_scene->m_registry.template emplace<T>(m_handle, std::forward<Args>(args)...);
+}
+
+template <typename T, typename... Args>
+T &Entity::AddOrReplaceComponent(Args &&...args) {
+  return m_scene->m_registry.template emplace_or_replace<T>(m_handle, std::forward<Args>(args)...);
+}
+
+template <typename T> T &Entity::GetComponent() {
+  return m_scene->m_registry.template get<T>(m_handle);
+}
+
+template <typename T> const T &Entity::GetComponent() const {
+  return m_scene->m_registry.template get<T>(m_handle);
+}
+
+template <typename T> bool Entity::HasComponent() const {
+  return m_scene->m_registry.template all_of<T>(m_handle);
+}
+
+template <typename T> void Entity::RemoveComponent() {
+  m_scene->m_registry.template remove<T>(m_handle);
+}
+
 } // namespace plaster::scene3d
