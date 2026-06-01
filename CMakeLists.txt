@@ -9,9 +9,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
 endif()
 
-# ---------------------------------------------------------------------------
+
 # Dependencies
-# ---------------------------------------------------------------------------
 find_package(Vulkan REQUIRED)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -45,9 +44,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(entt)
 
-# ---------------------------------------------------------------------------
+
 # Engine executable
-# ---------------------------------------------------------------------------
+
 add_executable(plaster
     src/main.cpp
 
