@@ -31,7 +31,7 @@ struct PushConstants {
     glm::vec4 fogParams;        // x = start, y = end, z = bands
 };
 
-// ---- Mesh generation helpers ---------------------------------------------
+//Mesh generation helpers
 
 // Append a planar quad to (vertices, indices) given the bottom-left world
 // corner and two in-plane edge vectors. Triangle winding follows the right
@@ -187,7 +187,7 @@ void generateMapMesh(const GridMap& map,
     }
 }
 
-// ---- Procedural stone texture --------------------------------------------
+//Procedural stone texture
 
 // Cheap integer hash, fine for visual noise.
 uint32_t hash2(uint32_t x, uint32_t y) {
@@ -238,7 +238,7 @@ std::vector<uint8_t> generateStoneTexture(uint32_t& outW, uint32_t& outH) {
     return px;
 }
 
-// ---- Upload helper (same shape as CubeRenderer's) -------------------------
+// Upload helper (same shape as CubeRenderer's)
 
 void uploadToDeviceLocalBuffer(VulkanContext* ctx,
                                VkCommandPool transferPool,
@@ -278,7 +278,7 @@ void uploadToDeviceLocalBuffer(VulkanContext* ctx,
 
 } // namespace
 
-// ===========================================================================
+
 
 MapRenderer::MapRenderer(VulkanContext* ctx,
                          VkCommandPool transferPool,

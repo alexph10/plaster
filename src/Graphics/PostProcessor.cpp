@@ -81,7 +81,7 @@ void PostProcessor::createPalettePresets() {
     // kept for contrast and for the Souls-style "swap atmosphere only"
     // workflow described in plastiboo.md.
     m_presets = {
-        // ---- Warm / saturated (signature look) ----
+        
         {"Ember Hearth", {
             rgba( 18,   8,   6),
             rgba( 80,  28,  14),
@@ -104,7 +104,7 @@ void PostProcessor::createPalettePresets() {
             rgba(240, 200, 120),
         }},
 
-        // ---- Cooler / original palettes ----
+       
         {"Bone & Pitch", {
             rgba( 12,  10,  14),
             rgba( 52,  48,  50),
@@ -142,7 +142,7 @@ void PostProcessor::createPalettePresets() {
         }},
     };
 
-    // Default to "Ember Hearth" - the signature warm look.
+   
     m_currentPalette = 0;
 }
 
@@ -150,8 +150,7 @@ void PostProcessor::createPaletteImage(VkCommandPool transferPool) {
     VkDevice device = m_ctx->getDevice();
     const uint32_t width = kMaxPaletteEntries;
 
-    // Single 1D image, max 16 RGBA8 texels. We will overwrite its contents
-    // each time the user picks a different preset.
+.
     VkImageCreateInfo imageInfo{};
     imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageInfo.imageType = VK_IMAGE_TYPE_1D;
@@ -183,7 +182,7 @@ void PostProcessor::createPaletteImage(VkCommandPool transferPool) {
     }
     vkBindImageMemory(device, m_paletteImage, m_paletteImageMemory, 0);
 
-    // 1D view.
+
     VkImageViewCreateInfo viewInfo{};
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     viewInfo.image = m_paletteImage;
@@ -194,7 +193,7 @@ void PostProcessor::createPaletteImage(VkCommandPool transferPool) {
         throw std::runtime_error("vkCreateImageView (palette) failed");
     }
 
-    // Sampler: NEAREST + CLAMP_TO_EDGE; we want exact palette entries.
+  
     VkSamplerCreateInfo sampler{};
     sampler.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
     sampler.magFilter = VK_FILTER_NEAREST;
@@ -211,7 +210,7 @@ void PostProcessor::createPaletteImage(VkCommandPool transferPool) {
         throw std::runtime_error("vkCreateSampler (palette) failed");
     }
 
-    // Reusable HOST_VISIBLE staging buffer (64 bytes total).
+    
     vk_utils::createBuffer(m_ctx,
                            static_cast<VkDeviceSize>(kMaxPaletteEntries) * 4,
                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -220,7 +219,7 @@ void PostProcessor::createPaletteImage(VkCommandPool transferPool) {
                            m_paletteStagingBuffer,
                            m_paletteStagingBufferMemory);
 
-    // Same NEAREST sampler reused for the geometry color input.
+    
     VkSamplerCreateInfo gsampler = sampler;
     gsampler.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
     gsampler.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
@@ -228,7 +227,7 @@ void PostProcessor::createPaletteImage(VkCommandPool transferPool) {
         throw std::runtime_error("vkCreateSampler (geometry) failed");
     }
 
-    (void)transferPool; // upload is done in uploadPalette()
+    (void)transferPool; 
 }
 
 void PostProcessor::uploadPalette(int presetIndex) {

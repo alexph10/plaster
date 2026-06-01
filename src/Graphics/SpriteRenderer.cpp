@@ -53,7 +53,7 @@ constexpr std::array<SpriteVertex, 4> kQuadVertices = {{
 // edge cases (e.g. camera directly above the sprite).
 constexpr std::array<uint16_t, 6> kQuadIndices = {{0, 1, 2, 0, 2, 3}};
 
-// ---- Procedural silhouette: small hooded figure -------------------------
+// Procedural silhouette: small hooded figure 
 //
 // 32 wide x 64 tall RGBA. The shape is built from two analytic regions:
 //   - Top ~35%: hood half-ellipse, biased so the front opening sits
@@ -164,7 +164,7 @@ void uploadToDeviceLocalBuffer(VulkanContext* ctx,
 
 } // namespace
 
-// =========================================================================
+
 
 SpriteRenderer::SpriteRenderer(VulkanContext* ctx,
                                VkCommandPool transferPool,

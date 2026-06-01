@@ -104,9 +104,9 @@ Renderer::~Renderer() {
     }
 }
 
-// ---------------------------------------------------------------------------
+
 // Swapchain
-// ---------------------------------------------------------------------------
+
 
 VkSurfaceFormatKHR Renderer::chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR>& formats) {
@@ -303,9 +303,9 @@ void Renderer::destroySwapchainResources() {
     }
 }
 
-// ---------------------------------------------------------------------------
+
 // Offscreen
-// ---------------------------------------------------------------------------
+
 
 void Renderer::createOffscreenRenderPass() {
     VkDevice device = m_vulkanContext->getDevice();
@@ -455,9 +455,9 @@ void Renderer::destroyOffscreenResources() {
     m_offscreenTargets.clear();
 }
 
-// ---------------------------------------------------------------------------
+
 // Post-process (dither + palette)
-// ---------------------------------------------------------------------------
+
 
 void Renderer::createPostRenderPass() {
     VkDevice device = m_vulkanContext->getDevice();
@@ -572,9 +572,9 @@ void Renderer::destroyPostResources() {
     m_postTargets.clear();
 }
 
-// ---------------------------------------------------------------------------
+
 // Commands + sync
-// ---------------------------------------------------------------------------
+
 
 void Renderer::createCommandPool() {
     VkDevice device = m_vulkanContext->getDevice();
@@ -621,9 +621,9 @@ void Renderer::createSyncObjects() {
     }
 }
 
-// ---------------------------------------------------------------------------
+
 // Resize
-// ---------------------------------------------------------------------------
+
 
 void Renderer::recreateSwapchain() {
     // Block while minimized (extent 0,0). Without this Vulkan rejects the
@@ -646,9 +646,9 @@ void Renderer::recreateSwapchain() {
     // swapchain render pass is format-compatible across resizes.
 }
 
-// ---------------------------------------------------------------------------
+
 // Frame recording
-// ---------------------------------------------------------------------------
+
 
 void Renderer::recordCommandBuffer(VkCommandBuffer cmd, uint32_t imageIndex,
                                    const CameraMatrices& camera) {
@@ -717,7 +717,7 @@ void Renderer::recordCommandBuffer(VkCommandBuffer cmd, uint32_t imageIndex,
 
     vkCmdEndRenderPass(cmd);
 
-    // --- 2. Post-process pass: dither + palette quantization ---
+    // 2. Post-process pass: dither + palette quantization
     const PostTarget& post = m_postTargets[m_currentFrame];
 
     VkRenderPassBeginInfo postPass{};
@@ -734,7 +734,7 @@ void Renderer::recordCommandBuffer(VkCommandBuffer cmd, uint32_t imageIndex,
 
     vkCmdEndRenderPass(cmd);
 
-    // --- 3. Transition swapchain image UNDEFINED -> TRANSFER_DST ---
+    // 3. Transition swapchain image UNDEFINED -> TRANSFER_DST 
     VkImage swapImg = m_swapchainImages[imageIndex];
     {
         VkImageMemoryBarrier b{};
@@ -754,7 +754,7 @@ void Renderer::recordCommandBuffer(VkCommandBuffer cmd, uint32_t imageIndex,
                              0, 0, nullptr, 0, nullptr, 1, &b);
     }
 
-    // --- 4. Blit post-output -> swapchain with NEAREST filter ---
+    // 4. Blit post-output -> swapchain with NEAREST filter 
     VkImageBlit blit{};
     blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     blit.srcSubresource.mipLevel = 0;
@@ -773,7 +773,7 @@ void Renderer::recordCommandBuffer(VkCommandBuffer cmd, uint32_t imageIndex,
                    swapImg, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                    1, &blit, VK_FILTER_NEAREST);
 
-    // --- 5. Transition swapchain image TRANSFER_DST -> COLOR_ATTACHMENT ---
+    // 5. Transition swapchain image TRANSFER_DST -> COLOR_ATTACHMENT 
     {
         VkImageMemoryBarrier b{};
         b.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -793,7 +793,7 @@ void Renderer::recordCommandBuffer(VkCommandBuffer cmd, uint32_t imageIndex,
                              0, 0, nullptr, 0, nullptr, 1, &b);
     }
 
-    // --- 6. Swapchain pass: ImGui draws on top of the blitted image ---
+    // 6. Swapchain pass: ImGui draws on top of the blitted image
     VkRenderPassBeginInfo scPass{};
     scPass.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     scPass.renderPass = m_swapchainRenderPass;
@@ -811,9 +811,9 @@ void Renderer::recordCommandBuffer(VkCommandBuffer cmd, uint32_t imageIndex,
     vkEndCommandBuffer(cmd);
 }
 
-// ---------------------------------------------------------------------------
+
 // ImGui per-frame UI
-// ---------------------------------------------------------------------------
+
 
 void Renderer::runImGui(const CameraMatrices& camera) {
     m_imguiManager->newFrame();
@@ -837,7 +837,7 @@ void Renderer::runImGui(const CameraMatrices& camera) {
     ImGui::Separator();
     ImGui::TextUnformatted("Plastiboo post pass");
 
-    // ---- Colour grade (runs first, shapes palette quantization) ----
+    // Colour grade (runs first, shapes palette quantization)
     ImGui::TextUnformatted("Colour grade");
 
     float saturation = m_postProcessor->getSaturation();
@@ -916,9 +916,9 @@ void Renderer::runImGui(const CameraMatrices& camera) {
     ImGui::End();
 }
 
-// ---------------------------------------------------------------------------
+
 // Map loading
-// ---------------------------------------------------------------------------
+
 
 void Renderer::loadMap(const GridMap& map) {
     // Tear down any previous map first; MapRenderer's dtor waits on the
@@ -933,9 +933,9 @@ void Renderer::setSprites(std::vector<SpriteInstance> sprites) {
     m_sprites = std::move(sprites);
 }
 
-// ---------------------------------------------------------------------------
+
 // Frame entry point
-// ---------------------------------------------------------------------------
+
 
 void Renderer::render(const CameraMatrices& camera, float dt) {
     VkDevice device = m_vulkanContext->getDevice();
