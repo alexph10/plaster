@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include <entt/entity/entity.hpp>
 #include <entt/entity/fwd.hpp>
 #include <glm/glm.hpp>
 

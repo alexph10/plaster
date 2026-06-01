@@ -53,6 +53,21 @@ void Window::waitEvents() {
     glfwWaitEvents();
 }
 
+void Window::setCursorCaptured(bool captured) {
+    if (m_cursorCaptured == captured) {
+        return;
+    }
+    m_cursorCaptured = captured;
+    glfwSetInputMode(m_window, GLFW_CURSOR,
+                     captured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+    // Prefer raw (unaccelerated, unscaled) mouse motion for FPS look when
+    // the platform supports it. Harmless when not captured.
+    if (glfwRawMouseMotionSupported()) {
+        glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION,
+                         captured ? GLFW_TRUE : GLFW_FALSE);
+    }
+}
+
 void Window::toggleFullscreen() {
     m_isFullscreen = !m_isFullscreen;
     

@@ -2,10 +2,11 @@
 
 #include <glm/glm.hpp>
 
+#include "Scene/3D/Core/entity.hpp"
+
 namespace plaster::scene3d {
 
 class Scene;
-class Entity;
 
 struct CameraData {
   Entity CameraEntity;

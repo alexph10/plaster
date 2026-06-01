@@ -22,12 +22,20 @@ public:
   
   void toggleFullscreen();
   bool isFullscreen() const { return m_isFullscreen; }
-  
+
+  // Lock or release the OS cursor. When captured the cursor is hidden and
+  // mouse delta becomes the only way to know its motion (used for FPS look).
+  // When released the cursor returns to normal and is free to interact with
+  // ImGui / window decorations.
+  void setCursorCaptured(bool captured);
+  bool isCursorCaptured() const { return m_cursorCaptured; }
+
 private:
   GLFWwindow* m_window;
   uint32_t m_width;
   uint32_t m_height;
   bool m_isFullscreen = false;
+  bool m_cursorCaptured = false;
 };
 
 } // namespace plaster

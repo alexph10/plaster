@@ -1,17 +1,15 @@
-#include <entt/entt.hpp>
-#include <iostream>
+#include "Core/Application.h"
 
-struct Position {
-    float x;
-    float y;
-};
+#include <cstdio>
+#include <exception>
 
 int main() {
-    entt::registry registry;
-    auto entity = registry.create();
-    registry.emplace<Position>(entity, 1.0f, 2.0f);
-
-    auto &pos = registry.get<Position>(entity);
-    std::cout << pos.x << ", " << pos.y << '\n';
+    try {
+        plaster::Application app;
+        app.run();
+    } catch (const std::exception& e) {
+        std::fprintf(stderr, "plaster: fatal error: %s\n", e.what());
+        return 1;
+    }
     return 0;
 }

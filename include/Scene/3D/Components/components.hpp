@@ -6,6 +6,7 @@
 #include "Scene/3D/Components/identity.hpp"
 #include "Scene/3D/Components/transform.hpp"
 #include "Scene/3D/Components/camera.hpp"
+#include "Scene/3D/Components/first-person-camera.hpp"
 #include "Scene/3D/Components/render.hpp"
 
 namespace plaster::scene3d {

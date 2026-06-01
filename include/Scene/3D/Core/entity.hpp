@@ -14,14 +14,17 @@ public:
   Entity() = default;
   Entity(entt::entity handle, Scene *scene);
 
+  // decltype(auto) here so empty tag components (whose emplace/get return
+  // void on entt::registry) compile cleanly alongside normal components
+  // that return a T&.
   template <typename T, typename... Args>
-  T &AddComponent(Args &&...args);
+  decltype(auto) AddComponent(Args &&...args);
 
   template <typename T, typename... Args>
-  T &AddOrReplaceComponent(Args &&...args);
+  decltype(auto) AddOrReplaceComponent(Args &&...args);
 
-  template <typename T> T &GetComponent();
-  template <typename T> const T &GetComponent() const;
+  template <typename T> decltype(auto) GetComponent();
+  template <typename T> decltype(auto) GetComponent() const;
 
   template <typename T> bool HasComponent() const;
 
@@ -52,20 +55,20 @@ private:
 namespace plaster::scene3d {
 
 template <typename T, typename... Args>
-T &Entity::AddComponent(Args &&...args) {
+decltype(auto) Entity::AddComponent(Args &&...args) {
   return m_scene->m_registry.template emplace<T>(m_handle, std::forward<Args>(args)...);
 }
 
 template <typename T, typename... Args>
-T &Entity::AddOrReplaceComponent(Args &&...args) {
+decltype(auto) Entity::AddOrReplaceComponent(Args &&...args) {
   return m_scene->m_registry.template emplace_or_replace<T>(m_handle, std::forward<Args>(args)...);
 }
 
-template <typename T> T &Entity::GetComponent() {
+template <typename T> decltype(auto) Entity::GetComponent() {
   return m_scene->m_registry.template get<T>(m_handle);
 }
 
-template <typename T> const T &Entity::GetComponent() const {
+template <typename T> decltype(auto) Entity::GetComponent() const {
   return m_scene->m_registry.template get<T>(m_handle);
 }
 
